@@ -1,0 +1,30 @@
+server:
+  port: 8080
+  error:
+    include-message: always
+
+spring:
+  application:
+    name: food-ai-backend
+
+  # Cấu hình PostgreSQL
+  datasource:
+    url: jdbc:postgresql://localhost:5432/ai_food_db
+    username: postgres
+    password: 123456
+    driver-class-name: org.postgresql.Driver
+
+  # Cấu hình JPA / Hibernate
+  jpa:
+    hibernate:
+      ddl-auto: update # Tự động tạo/cập nhật bảng từ Code Java vào DB
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+
+  # Cấu hình Redis Cache
+  data:
+    redis:
+      host: localhost
+      port: 6379
