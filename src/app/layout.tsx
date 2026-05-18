@@ -1,9 +1,8 @@
 import type { Metadata } from "next";
 import { Inter, Outfit } from "next/font/google";
 import "./globals.css";
-import ChatWidget from "@/components/ChatWidget";
 import Link from "next/link";
-import { UtensilsCrossed } from "lucide-react";
+import { UtensilsCrossed, MessageSquare } from "lucide-react";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -37,9 +36,13 @@ export default function RootLayout({
               <UtensilsCrossed className="w-6 h-6 text-primary-600" />
               <span>Nutri<span className="text-primary-600">AI</span></span>
             </Link>
-            <nav className="flex gap-6 font-medium">
+            <nav className="flex gap-6 font-medium items-center">
               <Link href="/" className="hover:text-primary-600 transition-colors">Home</Link>
               <Link href="/plan" className="hover:text-primary-600 transition-colors">My Plan</Link>
+              <Link href="/chat" className="flex items-center gap-1 text-primary-600 hover:text-primary-700 bg-primary-50 px-3 py-1.5 rounded-full transition-colors">
+                <MessageSquare className="w-4 h-4" />
+                <span>AI Chat</span>
+              </Link>
             </nav>
           </div>
         </header>
@@ -47,8 +50,6 @@ export default function RootLayout({
         <main className="flex-1 w-full max-w-7xl mx-auto px-4 py-8">
           {children}
         </main>
-        
-        <ChatWidget />
       </body>
     </html>
   );
