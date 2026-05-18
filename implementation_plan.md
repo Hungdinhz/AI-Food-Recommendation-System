@@ -1,66 +1,34 @@
-# Food & Meal Planner AI - Implementation Plan
+# Frontend API Client & UI Design Plan
 
-Dự án này sẽ xây dựng giao diện frontend cho ứng dụng "Food & Meal Planner AI" sử dụng Next.js (App Router), Tailwind CSS và TypeScript. Giao diện sẽ được thiết kế hiện đại, responsive và tích hợp các animation nhẹ nhàng để tăng trải nghiệm người dùng.
+Dự án này tuân theo kiến trúc **Decoupled**: Next.js chỉ đóng vai trò là Frontend. Toàn bộ Backend (Java Spring Boot, PostgreSQL, Redis) sẽ nằm ở một repository khác.
 
 ## Yêu Cầu Đánh Giá (User Review Required)
 > [!IMPORTANT]
-> - Chúng ta sẽ sử dụng **Next.js 14+ (App Router)**.
-> - Sử dụng `lucide-react` cho các icon.
-> - Khởi tạo dự án trực tiếp vào thư mục hiện tại (`d:\du an\AI-Food-Recommend-System`).
+> - Chúng ta sẽ không sử dụng bất kỳ code Backend/Database nào trong repo này.
+> - Xây dựng một layer API Client Service (sử dụng `fetch` API) tích hợp mock data để mô phỏng tương tác với Backend Java.
 
 ## Kế Hoạch Đề Xuất (Proposed Changes)
 
-### 1. Khởi tạo dự án
-- Chạy lệnh `npx -y create-next-app@latest . --typescript --tailwind --eslint --app --src-dir --use-npm --yes` để cài đặt Next.js, Tailwind, TypeScript.
-- Cấu hình lại `tailwind.config.ts` để thêm các màu sắc chủ đạo (vibrant, modern) và các utility cần thiết.
+### 1. API Client Services Layer
+Tạo thư mục `src/services` để quản lý các request gọi API:
 
-### 2. Mock Data
-Tạo file `src/lib/mockData.ts` chứa dữ liệu tĩnh cho:
-- Danh sách món ăn (có macro, calo, giá).
-- Kế hoạch ăn uống (Meal Plans).
-- Lịch sử chat mẫu.
+#### [NEW] `src/services/apiClient.ts`
+- Cấu hình base URL trỏ đến Backend Java (ví dụ: `http://localhost:8080/api/v1`).
+- Viết các hàm fetch cơ bản với error handling.
 
-### 3. Components
-#### [NEW] `src/components/HeroForm.tsx`
-- Form nhập liệu đầu vào với slider cho ngân sách.
-- Select/Radio buttons cho loại bữa ăn và mục tiêu dinh dưỡng.
-- Thiết kế nổi bật (Hero Section) với background gradient hoặc hình ảnh mờ.
+#### [NEW] `src/services/recipeService.ts`
+- Hàm `getRecipes(params)`: Gọi API để lấy danh sách món ăn (kèm mock data tĩnh nếu call lỗi/chưa có backend).
+- Các params: `budget`, `mealType`, `minProtein`, `maxCalories`.
 
-#### [NEW] `src/components/FoodCard.tsx`
-- Hiển thị hình ảnh món ăn, tên, tổng calo.
-- Hiển thị Macro (Protein, Carbs, Fat) dưới dạng badge hoặc progress bar nhỏ.
-- Ước lượng chi phí.
-- Hiệu ứng hover (scale nhẹ, shadow).
+#### [NEW] `src/services/mealPlanService.ts`
+- Hàm `getMealPlan(userId)` và `createMealPlan(data)`.
 
-#### [NEW] `src/components/MealCalendar.tsx`
-- Giao diện dạng lưới (grid) hiển thị các ngày trong tuần/tháng.
-- Hiển thị các bữa ăn đã được phân bổ trong từng ngày.
-
-#### [NEW] `src/components/ChatWidget.tsx`
-- Nút floating ở góc dưới bên phải màn hình.
-- Khi click sẽ mở ra một cửa sổ chat nhỏ (giống ChatGPT) với giao diện tin nhắn giữa User và AI.
-
-#### [NEW] `src/components/KitchenTimeline.tsx`
-- Dùng cho trang chi tiết món ăn để hiển thị các bước nấu ăn dạng timeline.
-
-### 4. Pages
-#### [NEW] `src/app/page.tsx` (Trang chủ)
-- Chứa `HeroForm` ở đầu.
-- Gợi ý một số `FoodCard` tiêu biểu.
-- Hiển thị `ChatWidget` toàn cục.
-
-#### [NEW] `src/app/food/[id]/page.tsx` (Trang chi tiết món ăn)
-- Banner hình ảnh món ăn.
-- Phần thông tin: Tổng quan (calo, macros).
-- Danh sách nguyên liệu.
-- Các bước nấu ăn (`KitchenTimeline`).
-- Mẹo nhà bếp.
-
-#### [NEW] `src/app/plan/page.tsx` (Trang kế hoạch ăn uống)
-- Hiển thị `MealCalendar`.
+### 2. Thiết kế và Hoàn thiện UI Trang Chủ (Home Page)
+Mặc dù đã có form cơ bản, chúng ta sẽ nâng cấp trang chủ:
+- **HeroForm**: Liên kết với `recipeService.ts` để khi bấm "Generate", nó sẽ hiển thị trạng thái loading, gọi API Service và trả về danh sách món ăn phù hợp (sử dụng Mock Data).
+- **Trạng thái Loading & Kết quả**: Thiết kế thêm phần hiển thị danh sách kết quả trả về ngay bên dưới HeroForm.
 
 ## Kế Hoạch Xác Minh (Verification Plan)
-### Chạy thử cục bộ
 - Chạy `npm run dev`.
-- Kiểm tra trực quan nghiệm các component trên trình duyệt (đảm bảo responsive trên Mobile và Desktop).
-- Tương tác với form, xem hover effect trên Food Card, mở/đóng Chat Widget.
+- Tương tác với HeroForm trên trang chủ.
+- Kiểm tra console xem API client đã log ra URL đúng chưa (vd: `/api/v1/recipes?budget=15&mealType=Lunch...`) và giao diện có hiển thị Mock Data đúng cách không.

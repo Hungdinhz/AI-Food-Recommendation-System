@@ -2,15 +2,24 @@
 
 import React, { useState } from "react";
 import { motion } from "framer-motion";
-import { Utensils, Target, DollarSign, Sparkles } from "lucide-react";
+import { Utensils, Target, DollarSign, Sparkles, Loader2 } from "lucide-react";
 
-export default function HeroForm() {
+interface HeroFormProps {
+  onGenerate: (params: { budget: number; mealType: string; nutritionGoal: string }) => void;
+  isLoading: boolean;
+}
+
+export default function HeroForm({ onGenerate, isLoading }: HeroFormProps) {
   const [budget, setBudget] = useState<number>(15);
   const [mealType, setMealType] = useState<string>("Lunch");
   const [goal, setGoal] = useState<string>("Balanced");
 
   const mealTypes = ["Breakfast", "Lunch", "Dinner", "Snack"];
   const goals = ["Weight Loss", "Muscle Gain", "Balanced", "Vegetarian"];
+
+  const handleSubmit = () => {
+    onGenerate({ budget, mealType, nutritionGoal: goal });
+  };
 
   return (
     <section className="relative w-full py-20 px-6 overflow-hidden bg-white/50 backdrop-blur-3xl rounded-[2rem] border border-white/20 shadow-2xl">
@@ -55,6 +64,7 @@ export default function HeroForm() {
               value={budget}
               onChange={(e) => setBudget(Number(e.target.value))}
               className="w-full accent-primary-500"
+              disabled={isLoading}
             />
             <div className="flex justify-between text-xs text-slate-400">
               <span>$5</span>
@@ -73,11 +83,12 @@ export default function HeroForm() {
                 <button
                   key={type}
                   onClick={() => setMealType(type)}
+                  disabled={isLoading}
                   className={`px-4 py-2 rounded-full text-sm transition-all duration-200 ${
                     mealType === type
                       ? "bg-secondary-500 text-white shadow-md shadow-secondary-500/20"
                       : "bg-slate-100 text-slate-600 hover:bg-slate-200"
-                  }`}
+                  } ${isLoading && "opacity-50 cursor-not-allowed"}`}
                 >
                   {type}
                 </button>
@@ -96,11 +107,12 @@ export default function HeroForm() {
                 <button
                   key={g}
                   onClick={() => setGoal(g)}
+                  disabled={isLoading}
                   className={`px-4 py-2 rounded-full text-sm transition-all duration-200 ${
                     goal === g
                       ? "bg-accent-500 text-white shadow-md shadow-accent-500/20"
                       : "bg-slate-100 text-slate-600 hover:bg-slate-200"
-                  }`}
+                  } ${isLoading && "opacity-50 cursor-not-allowed"}`}
                 >
                   {g}
                 </button>
@@ -110,9 +122,22 @@ export default function HeroForm() {
 
           {/* Generate Button */}
           <div className="md:col-span-3 pt-6 flex justify-center">
-            <button className="px-8 py-4 bg-foreground text-white rounded-full font-semibold text-lg hover:bg-slate-800 hover:scale-105 transition-all duration-200 shadow-xl flex items-center gap-2">
-              Generate My Meal
-              <Sparkles className="w-5 h-5" />
+            <button 
+              onClick={handleSubmit}
+              disabled={isLoading}
+              className="px-8 py-4 bg-foreground text-white rounded-full font-semibold text-lg hover:bg-slate-800 hover:scale-105 transition-all duration-200 shadow-xl flex items-center gap-2 disabled:opacity-70 disabled:hover:scale-100 disabled:cursor-not-allowed"
+            >
+              {isLoading ? (
+                <>
+                  <Loader2 className="w-5 h-5 animate-spin" />
+                  Analyzing Preferences...
+                </>
+              ) : (
+                <>
+                  Generate My Meal
+                  <Sparkles className="w-5 h-5" />
+                </>
+              )}
             </button>
           </div>
         </motion.div>
