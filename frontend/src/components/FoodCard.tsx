@@ -15,14 +15,14 @@ export default function FoodCard({ food }: FoodCardProps) {
         {/* Image Container */}
         <div className="relative h-56 w-full overflow-hidden">
           <Image
-            src={food.image}
+            src={food.imageUrl}
             alt={food.name}
             fill
             className="object-cover group-hover:scale-105 transition-transform duration-500"
           />
           <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full text-sm font-semibold flex items-center gap-1 shadow-sm text-slate-700">
             <Flame className="w-4 h-4 text-orange-500" />
-            {food.calories} kcal
+            {food.totalCalories} kcal
           </div>
         </div>
 

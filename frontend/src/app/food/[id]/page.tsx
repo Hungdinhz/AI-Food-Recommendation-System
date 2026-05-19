@@ -17,13 +17,13 @@ export default async function FoodDetailPage({ params }: { params: Promise<{ id:
     <div className="max-w-4xl mx-auto space-y-12">
       {/* Hero Header */}
       <div className="relative h-[400px] rounded-[3rem] overflow-hidden shadow-2xl">
-        <Image src={food.image} alt={food.name} fill className="object-cover" />
+        <Image src={food.imageUrl} alt={food.name} fill className="object-cover" />
         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
         <div className="absolute bottom-0 left-0 right-0 p-8 text-white">
           <h1 className="text-4xl md:text-5xl font-bold mb-4">{food.name}</h1>
           <div className="flex flex-wrap gap-4 items-center text-sm font-medium">
             <span className="flex items-center gap-1 bg-white/20 backdrop-blur-md px-3 py-1.5 rounded-full">
-              <Flame className="w-4 h-4 text-orange-400" /> {food.calories} kcal
+              <Flame className="w-4 h-4 text-orange-400" /> {food.totalCalories} kcal
             </span>
             <span className="flex items-center gap-1 bg-white/20 backdrop-blur-md px-3 py-1.5 rounded-full text-green-300">
               <DollarSign className="w-4 h-4" /> {food.costEstimate.toFixed(2)}

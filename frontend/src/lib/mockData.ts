@@ -1,8 +1,8 @@
 export interface Food {
   id: string;
   name: string;
-  image: string;
-  calories: number;
+  imageUrl: string;
+  totalCalories: number;
   macros: {
     protein: number;
     carbs: number;
@@ -18,8 +18,8 @@ export const MOCK_FOODS: Food[] = [
   {
     id: "1",
     name: "Grilled Salmon Salad",
-    image: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?q=80&w=800&auto=format&fit=crop",
-    calories: 450,
+    imageUrl: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?q=80&w=800&auto=format&fit=crop",
+    totalCalories: 450,
     macros: { protein: 42, carbs: 12, fat: 28 },
     costEstimate: 12.5,
     ingredients: [
@@ -40,8 +40,8 @@ export const MOCK_FOODS: Food[] = [
   {
     id: "2",
     name: "Quinoa Chicken Bowl",
-    image: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?q=80&w=800&auto=format&fit=crop",
-    calories: 520,
+    imageUrl: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?q=80&w=800&auto=format&fit=crop",
+    totalCalories: 520,
     macros: { protein: 38, carbs: 45, fat: 18 },
     costEstimate: 8.0,
     ingredients: [
@@ -62,8 +62,8 @@ export const MOCK_FOODS: Food[] = [
   {
     id: "3",
     name: "Vegan Tofu Stir-fry",
-    image: "https://images.unsplash.com/photo-1511690656952-34342bb7c2f2?q=80&w=800&auto=format&fit=crop",
-    calories: 380,
+    imageUrl: "https://images.unsplash.com/photo-1511690656952-34342bb7c2f2?q=80&w=800&auto=format&fit=crop",
+    totalCalories: 380,
     macros: { protein: 22, carbs: 40, fat: 16 },
     costEstimate: 6.5,
     ingredients: [

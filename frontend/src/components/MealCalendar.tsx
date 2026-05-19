@@ -81,11 +81,11 @@ export default function MealCalendar() {
                       <div className="bg-white p-3 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow h-full flex flex-col relative overflow-hidden">
                         <div className="absolute top-0 left-0 w-full h-1 bg-primary-500"></div>
                         <div className="relative w-full h-16 rounded-lg overflow-hidden mb-2 shrink-0">
-                          <Image src={entry.food.image} alt={entry.food.name} fill className="object-cover" />
+                          <Image src={entry.food.imageUrl} alt={entry.food.name} fill className="object-cover" />
                         </div>
                         <div className="flex-1">
                           <div className="font-bold text-slate-800 text-xs leading-tight line-clamp-2" title={entry.food.name}>{entry.food.name}</div>
-                          <div className="text-[10px] text-slate-500 mt-1 font-medium">{entry.food.calories} kcal</div>
+                          <div className="text-[10px] text-slate-500 mt-1 font-medium">{entry.food.totalCalories} kcal</div>
                         </div>
 
                         {/* Hover Actions */}

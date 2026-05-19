@@ -15,8 +15,12 @@ export default function Home() {
   // Initial load
   useEffect(() => {
     const fetchInitial = async () => {
-      const initialFoods = await recipeService.getRecommendations({});
-      setFoods(initialFoods);
+      try {
+        const initialFoods = await recipeService.getRecommendations({});
+        setFoods(initialFoods);
+      } catch (error) {
+        console.error("Failed to fetch initial recipes", error);
+      }
     };
     fetchInitial();
   }, []);

@@ -9,7 +9,7 @@ export class ApiError extends Error {
 
 export async function fetchApi<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
   const url = `${BASE_URL}${endpoint}`;
-  
+
   const defaultHeaders = {
     "Content-Type": "application/json",
   };
