@@ -1,77 +1,142 @@
-import { MOCK_FOODS, Food } from "@/lib/mockData";
+import { fetchApi } from "./apiClient";
+import { Food } from "@/lib/mockData";
 
-export type MealType = "Breakfast" | "Lunch" | "Dinner" | "Snack";
-export type DayOfWeek = "Mon" | "Tue" | "Wed" | "Thu" | "Fri" | "Sat" | "Sun";
+export type MealType = "Sáng" | "Trưa" | "Tối";
+export type DayOfWeek = "T2" | "T3" | "T4" | "T5" | "T6" | "T7" | "CN";
 
 export interface MealEntry {
   id: string;
-  foodId: string;
   food: Food;
 }
 
 export type DailyMeals = {
-  [K in MealType]: MealEntry | null;
+  [K in MealType]?: MealEntry | null;
 };
 
 export type WeeklyPlan = {
   [K in DayOfWeek]: DailyMeals;
 };
 
+export interface MealPlanSummary {
+  id: number;
+  startDate: string;
+  endDate: string;
+  targetCalories: number;
+  budgetLimit: number;
+  totalEstimatedCost: number;
+}
+
+export interface GeneratePlanParams {
+  userId: number;
+  budget: number;
+  targetCalories: number;
+}
+
+// Map the backend response into our frontend WeeklyPlan structure
+function mapApiResponseToWeeklyPlan(data: any): {
+  plan: WeeklyPlan;
+  summary: MealPlanSummary;
+} {
+  const days: DayOfWeek[] = ["T2", "T3", "T4", "T5", "T6", "T7", "CN"];
+
+  const emptyDay = (): DailyMeals => ({
+    Sáng: null,
+    Trưa: null,
+    Tối: null,
+  });
+
+  const plan: WeeklyPlan = {
+    T2: emptyDay(),
+    T3: emptyDay(),
+    T4: emptyDay(),
+    T5: emptyDay(),
+    T6: emptyDay(),
+    T7: emptyDay(),
+    CN: emptyDay(),
+  };
+
+  // Group daily meals by date
+  const dateGroups: Record<string, any[]> = {};
+  if (data.dailyMeals) {
+    for (const meal of data.dailyMeals) {
+      const date = meal.date;
+      if (!dateGroups[date]) dateGroups[date] = [];
+      dateGroups[date].push(meal);
+    }
+  }
+
+  // Map each date group to a day of the week
+  const sortedDates = Object.keys(dateGroups).sort();
+  sortedDates.forEach((date, idx) => {
+    if (idx >= 7) return;
+    const dayKey = days[idx];
+    const meals = dateGroups[date];
+
+    for (const meal of meals) {
+      const recipe = meal.recipe;
+      if (!recipe) continue;
+
+      const food: Food = {
+        id: recipe.id?.toString() || Math.random().toString(),
+        name: recipe.name || "Unknown",
+        imageUrl:
+          recipe.imageUrl ||
+          "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?q=80&w=800&auto=format&fit=crop",
+        totalCalories: recipe.totalCalories || 0,
+        macros: {
+          protein: recipe.protein || 0,
+          carbs: recipe.carbs || 0,
+          fat: recipe.fat || 0,
+        },
+        costEstimate: 0,
+        ingredients: recipe.ingredients
+          ? recipe.ingredients.map(
+              (ri: any) =>
+                `${ri.amount} ${ri.ingredient?.unit || ""} ${ri.ingredient?.name || ""}`
+            )
+          : [],
+        cookingSteps: recipe.instructions
+          ? recipe.instructions
+              .split("\n")
+              .filter((s: string) => s.trim())
+              .map((step: string, i: number) => ({
+                time: `Bước ${i + 1}`,
+                instruction: step.replace(/^\d+\.\s*/, ""),
+              }))
+          : [],
+        tips: [],
+      };
+
+      const mealType = meal.mealType as MealType;
+      if (mealType && plan[dayKey]) {
+        plan[dayKey][mealType] = {
+          id: `${dayKey}-${mealType}`,
+          food,
+        };
+      }
+    }
+  });
+
+  const summary: MealPlanSummary = {
+    id: data.id,
+    startDate: data.startDate,
+    endDate: data.endDate,
+    targetCalories: data.targetCalories,
+    budgetLimit: data.budgetLimit,
+    totalEstimatedCost: data.totalEstimatedCost,
+  };
+
+  return { plan, summary };
+}
+
 export const mealPlanService = {
-  async getWeeklyPlan(userId: string): Promise<WeeklyPlan> {
-    // Simulate network delay
-    await new Promise((res) => setTimeout(res, 800));
-
-    // Fallback Mock Data using MOCK_FOODS
-    const food1 = MOCK_FOODS[0];
-    const food2 = MOCK_FOODS[1];
-    const food3 = MOCK_FOODS[2];
-
-    const createEntry = (id: string, food: Food): MealEntry => ({ id, foodId: food.id, food });
-
-    const emptyDay: DailyMeals = {
-      Breakfast: null,
-      Lunch: null,
-      Dinner: null,
-      Snack: null,
-    };
-
-    return {
-      Mon: {
-        Breakfast: createEntry("m1", food3),
-        Lunch: createEntry("m2", food1),
-        Dinner: createEntry("m3", food2),
-        Snack: null,
-      },
-      Tue: {
-        ...emptyDay,
-        Breakfast: createEntry("t1", food1),
-        Lunch: createEntry("t2", food2),
-      },
-      Wed: {
-        ...emptyDay,
-        Lunch: createEntry("w1", food3),
-        Dinner: createEntry("w2", food1),
-      },
-      Thu: {
-        ...emptyDay,
-        Breakfast: createEntry("th1", food2),
-        Snack: createEntry("th2", food3),
-      },
-      Fri: {
-        ...emptyDay,
-        Lunch: createEntry("f1", food1),
-        Dinner: createEntry("f2", food2),
-      },
-      Sat: {
-        ...emptyDay,
-      },
-      Sun: {
-        ...emptyDay,
-        Breakfast: createEntry("s1", food3),
-        Lunch: createEntry("s2", food2),
-        Dinner: createEntry("s3", food1),
-      },
-    };
+  async generateWeeklyPlan(
+    params: GeneratePlanParams
+  ): Promise<{ plan: WeeklyPlan; summary: MealPlanSummary }> {
+    const data = await fetchApi<any>("/meal-plans/generate", {
+      method: "POST",
+      body: JSON.stringify(params),
+    });
+    return mapApiResponseToWeeklyPlan(data);
   },
 };

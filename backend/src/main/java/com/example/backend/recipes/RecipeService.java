@@ -2,6 +2,7 @@ package com.example.backend.recipes;
 
 import org.springframework.stereotype.Service;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -11,6 +12,10 @@ public class RecipeService {
 
     public RecipeService(RecipeRepository recipeRepository) {
         this.recipeRepository = recipeRepository;
+    }
+
+    public Optional<RecipeDTO> getRecipeById(Long id) {
+        return recipeRepository.findById(id).map(this::mapToDTO);
     }
 
     public List<RecipeDTO> getAllRecipes() {
