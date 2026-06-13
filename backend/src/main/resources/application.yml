@@ -30,8 +30,24 @@ spring:
       port: 6379
       timeout: 2000ms # Timeout kết nối 2 giây
 
+  # Cấu hình Mail (Mock console output cho development)
+  mail:
+    host: localhost
+    port: 25
+    properties:
+      mail:
+        smtp:
+          auth: false
+          starttls:
+            enable: false
+
 # Cấu hình AI LLM API (để trống sẽ dùng mock response)
 ai:
   api:
     key: ${AI_API_KEY:}
     url: ${AI_API_URL:}
+
+# Cấu hình JWT
+app:
+  jwtSecret: 5367566B59703373367639792F423F4528482B4D6251655468576D5A71347437
+  jwtExpirationMs: 86400000 # 24 hours

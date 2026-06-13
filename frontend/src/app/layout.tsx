@@ -8,7 +8,10 @@ import {
   CalendarDays,
   ExternalLink,
   Heart,
+  User as UserIcon,
 } from "lucide-react";
+import { Providers } from "./providers/Providers";
+import { AuthNav } from "@/components/AuthNav";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -37,47 +40,52 @@ export default function RootLayout({
       className={`${inter.variable} ${outfit.variable} h-full antialiased scroll-smooth`}
     >
       <body className="min-h-full flex flex-col bg-slate-50 text-slate-900">
-        {/* Header */}
-        <header className="sticky top-0 z-40 bg-white/80 backdrop-blur-md border-b border-slate-200">
-          <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
-            <Link
-              href="/"
-              className="flex items-center gap-2 text-xl font-bold text-slate-900"
-            >
-              <UtensilsCrossed className="w-6 h-6 text-primary-600" />
-              <span>
-                Nutri<span className="text-primary-600">AI</span>
-              </span>
-            </Link>
-            <nav className="flex gap-4 md:gap-6 font-medium items-center text-sm">
+        <Providers>
+          {/* Header */}
+          <header className="sticky top-0 z-40 bg-white/80 backdrop-blur-md border-b border-slate-200">
+            <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
               <Link
                 href="/"
-                className="hover:text-primary-600 transition-colors"
+                className="flex items-center gap-2 text-xl font-bold text-slate-900"
               >
-                Trang chủ
+                <UtensilsCrossed className="w-6 h-6 text-primary-600" />
+                <span>
+                  Nutri<span className="text-primary-600">AI</span>
+                </span>
               </Link>
-              <Link
-                href="/plan"
-                className="flex items-center gap-1 hover:text-primary-600 transition-colors"
-              >
-                <CalendarDays className="w-4 h-4" />
-                <span className="hidden sm:inline">Thực đơn</span>
-              </Link>
-              <Link
-                href="/chat"
-                className="flex items-center gap-1 text-primary-600 hover:text-primary-700 bg-primary-50 px-3 py-1.5 rounded-full transition-colors"
-              >
-                <MessageSquare className="w-4 h-4" />
-                <span>AI Chat</span>
-              </Link>
-            </nav>
-          </div>
-        </header>
+              <div className="flex items-center gap-4 md:gap-6">
+                <nav className="flex gap-4 md:gap-6 font-medium items-center text-sm">
+                  <Link
+                    href="/"
+                    className="hover:text-primary-600 transition-colors"
+                  >
+                    Trang chủ
+                  </Link>
+                  <Link
+                    href="/plan"
+                    className="flex items-center gap-1 hover:text-primary-600 transition-colors"
+                  >
+                    <CalendarDays className="w-4 h-4" />
+                    <span className="hidden sm:inline">Thực đơn</span>
+                  </Link>
+                  <Link
+                    href="/chat"
+                    className="flex items-center gap-1 text-primary-600 hover:text-primary-700 bg-primary-50 px-3 py-1.5 rounded-full transition-colors"
+                  >
+                    <MessageSquare className="w-4 h-4" />
+                    <span>AI Chat</span>
+                  </Link>
+                </nav>
+                <div className="h-6 w-px bg-slate-200 hidden md:block"></div>
+                <AuthNav />
+              </div>
+            </div>
+          </header>
 
-        {/* Main Content */}
-        <main className="flex-1 w-full max-w-7xl mx-auto px-4 py-8">
-          {children}
-        </main>
+          {/* Main Content */}
+          <main className="flex-1 w-full max-w-7xl mx-auto px-4 py-8">
+            {children}
+          </main>
 
         {/* Footer */}
         <footer className="bg-white border-t border-slate-200 mt-auto">
@@ -159,6 +167,7 @@ export default function RootLayout({
             </div>
           </div>
         </footer>
+        </Providers>
       </body>
     </html>
   );
